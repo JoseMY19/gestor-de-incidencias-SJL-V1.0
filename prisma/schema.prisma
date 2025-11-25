@@ -1,0 +1,38 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String
+  role      String   @default("user") // "user" or "admin"
+  incidents Incident[]
+  createdAt DateTime @default(now())
+}
+
+model Incident {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  name       String
+  type       String
+  status     String
+  location   String
+  occurrenceTime DateTime @default(now())
+  imageUrl   String?
+  timestamp  DateTime @default(now())
+  lat        String?
+  lng        String?
+  reportedBy String
+  description String?
+  postedBy   User?    @relation(fields: [userId], references: [id])
+  userId     Int?
+  createdAt  DateTime @default(now())
+}

@@ -1,0 +1,23 @@
+{
+  "name": "gestor-incidencias-sjl",
+  "version": "1.0.0",
+  "description": "Gestor de Incidencias - San Juan de Lurigancho",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "studio": "prisma studio"
+  },
+  "keywords": [],
+  "author": "Jose Milla",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^3.0.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "multer": "^2.0.2",
+    "prisma": "^5.22.0"
+  }
+}

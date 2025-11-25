@@ -1,61 +1,141 @@
 <!doctype html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Gestor de Incidencias - San Juan de Lurigancho</title>
 
     <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="./styles.css" />
 </head>
+
 <body>
     <header class="topbar">
-        <div class="brand">📌 Gestor de Incidencias - SJL</div>
-        <nav>
+        <div class="brand">
+            <span>📌</span> Gestor de Incidencias - SJL
+        </div>
+        <nav id="mainNav" class="hidden">
             <button data-view="inicio" class="nav-btn active">Inicio</button>
-            <button data-view="incidencias" class="nav-btn">Incidencias</button>
-            <button data-view="registrar" class="nav-btn">Registrar Incidencias</button>
-            <button data-view="lista" class="nav-btn">Lista de Incidencias</button>
-            <button data-view="mapa" class="nav-btn">Mapa de Cámaras</button>
+            <button data-view="registrar" class="nav-btn">Registrar</button>
+            <button data-view="lista" class="nav-btn">Incidencias</button>
+            <button data-view="dashboard" class="nav-btn">Dashboard</button>
+            <button data-view="mapa" class="nav-btn">Mapa</button>
+            <button id="btnTheme" class="nav-btn">🌙</button>
+            <button id="btnLogout" class="nav-btn" style="color: var(--danger);">Salir</button>
         </nav>
     </header>
 
     <main class="container">
-        <section id="inicio" class="view">
-            <h1>Bienvenido</h1>
-            <p>Bienvenido al gestor de incidencias. Usa el menú para registrar, listar y visualizar las cámaras. 👍</p>
-        </section>
-
-        <section id="incidencias" class="view hidden">
-            <h2>Incidencias</h2>
-            <div class="options">
-                <button id="irRegistrar" class="btn primary">Registrar incidencia</button>
-                <button id="irLista" class="btn">Lista de incidencias</button>
-                <button id="cerrarSesion" class="btn danger">Cerrar</button>
+        <!-- VISTA LOGIN -->
+        <section id="login" class="view">
+            <div class="card" style="max-width: 400px; margin: 4rem auto;">
+                <h2 style="text-align: center;">Iniciar Sesión</h2>
+                <form id="loginForm" class="form"
+                    style="grid-template-columns: 1fr; box-shadow: none; border: none; padding: 0;">
+                    <label>Usuario
+                        <input id="loginUser" type="text" required />
+                    </label>
+                    <label>Contraseña
+                        <input id="loginPass" type="password" required />
+                    </label>
+                    <button type="submit" class="btn primary" style="width: 100%; margin-top: 1rem;">Ingresar</button>
+                    <p style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                        ¿No tienes cuenta? <a href="#" id="linkRegister" style="color: var(--primary);">Regístrate
+                            aquí</a>
+                    </p>
+                </form>
             </div>
         </section>
 
+        <!-- VISTA REGISTER -->
+        <section id="register" class="view hidden">
+            <div class="card" style="max-width: 400px; margin: 4rem auto;">
+                <h2 style="text-align: center;">Crear Cuenta</h2>
+                <form id="registerForm" class="form"
+                    style="grid-template-columns: 1fr; box-shadow: none; border: none; padding: 0;">
+                    <label>Nombre Completo
+                        <input id="regName" type="text" required />
+                    </label>
+                    <label>Usuario
+                        <input id="regUser" type="text" required />
+                    </label>
+                    <label>Contraseña
+                        <input id="regPass" type="password" required />
+                    </label>
+                    <button type="submit" class="btn success"
+                        style="width: 100%; margin-top: 1rem;">Registrarse</button>
+                    <p style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                        ¿Ya tienes cuenta? <a href="#" id="linkLogin" style="color: var(--primary);">Inicia sesión</a>
+                    </p>
+                </form>
+            </div>
+        </section>
+
+        <!-- VISTA INICIO -->
+        <section id="inicio" class="view hidden">
+            <div class="card" style="text-align: center; padding: 4rem 2rem;">
+                <h1>Bienvenido al Sistema</h1>
+                <p id="welcomeMsg" style="font-size: 1.2rem; max-width: 600px; margin: 0 auto; margin-bottom: 2rem;">
+                    Plataforma integral para la gestión y monitoreo de incidencias.
+                </p>
+                <div class="options" style="justify-content: center;">
+                    <button onclick="document.querySelector('[data-view=\'registrar\']').click()"
+                        class="btn primary">Nueva Incidencia</button>
+                    <button onclick="document.querySelector('[data-view=\'dashboard\']').click()" class="btn">Ver
+                        Estadísticas</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA DASHBOARD -->
+        <section id="dashboard" class="view hidden">
+            <div class="card">
+                <h2>Panel de Control</h2>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                    <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 1rem;">
+                        <h3 style="text-align: center; margin-bottom: 1rem;">Incidencias por Tipo</h3>
+                        <canvas id="chartType"></canvas>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 1rem;">
+                        <h3 style="text-align: center; margin-bottom: 1rem;">Estado de Resolución</h3>
+                        <canvas id="chartStatus"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- VISTA REGISTRAR -->
         <section id="registrar" class="view hidden">
-            <h2>Registrar incidencia</h2>
-            <form id="incidentForm" class="form">
-                <label>Nombre de incidencia
-                    <input id="incidentName" name="name" type="text" maxlength="100" required placeholder="Ej: Robo en escuela" />
+            <div style="margin-bottom: 1rem;">
+                <h2>Nueva Incidencia</h2>
+                <p>Completa el formulario para registrar un nuevo evento.</p>
+            </div>
+
+            <form id="incidentForm" class="form" enctype="multipart/form-data">
+                <label>Título de la incidencia
+                    <input id="incidentName" name="name" type="text" maxlength="100" required
+                        placeholder="Ej: Robo en Av. Próceres" />
                 </label>
 
                 <label>Tipología
                     <select id="incidentType" required>
-                        <option value="">-- seleccionar --</option>
+                        <option value="">-- Seleccionar tipo --</option>
                         <option>Robo</option>
                         <option>Vandalismo</option>
-                        <option>Accidente</option>
-                        <option>Disturbio</option>
+                        <option>Accidente de Tránsito</option>
+                        <option>Disturbio Público</option>
+                        <option>Emergencia Médica</option>
                         <option>Otro</option>
                     </select>
                 </label>
 
-                <label>Estado
+                <label>Estado actual
                     <select id="incidentStatus" required>
                         <option>En proceso</option>
                         <option>Resuelta</option>
@@ -63,70 +143,140 @@
                     </select>
                 </label>
 
-                <label>Ubicación (dirección o referencia)
-                    <input id="incidentLocation" name="location" type="text" required placeholder="Av. Ejemplo 123, Urb. ..." />
+                <label>Ubicación (Dirección)
+                    <input id="incidentLocation" name="location" type="text" required
+                        placeholder="Av. Ejemplo 123..." />
                 </label>
 
-                <label>Fecha y hora (automático)
-                    <input id="incidentTimestamp" readonly />
+                <label style="grid-column: 1 / -1;">Descripción Detallada
+                    <textarea id="incidentDescription" name="description" rows="3"
+                        placeholder="Describa los detalles del suceso..."></textarea>
                 </label>
 
-                <label>Mapa (clic para seleccionar ubicación)
+                <label>Fecha y Hora del Suceso
+                    <input id="incidentOccurrence" type="datetime-local" required />
+                </label>
+
+                <label>Imagen (Opcional)
+                    <input id="incidentImage" type="file" accept="image/*" />
+                </label>
+
+                <label>Fecha Registro (Auto)
+                    <input id="incidentTimestamp" readonly style="background-color: #f1f5f9; cursor: not-allowed;" />
+                </label>
+
+                <label>Reportado por
+                    <input id="reportedBy" type="text" required placeholder="Nombre del oficial / ciudadano" />
+                </label>
+
+                <label>Código (Autogenerado)
+                    <input id="incidentCode" readonly style="background-color: #f1f5f9; font-family: monospace;" />
+                </label>
+
+                <label style="grid-column: 1 / -1;">Ubicación en Mapa (Click para fijar)
                     <div id="mapPreview" class="map-small"></div>
                     <input id="incidentLat" type="hidden" />
                     <input id="incidentLng" type="hidden" />
                 </label>
 
-                <label>Nombre de quien registra
-                    <input id="reportedBy" type="text" required placeholder="Nombre completo" />
-                </label>
-
-                <label>Código de incidencia
-                    <input id="incidentCode" readonly />
-                </label>
-
                 <div class="form-actions">
-                    <button id="btnRegister" class="btn primary">Registrar</button>
-                    <button id="btnFinalize" type="button" class="btn success">Finalizar incidencia</button>
-                    <button id="btnCloseForm" type="button" class="btn">Cerrar</button>
+                    <button id="btnCloseForm" type="button" class="btn danger">Cancelar</button>
+                    <button id="btnFinalize" type="button" class="btn success">Registrar y Finalizar</button>
+                    <button id="btnRegister" class="btn primary">Registrar Incidencia</button>
                 </div>
-
             </form>
         </section>
 
+        <!-- VISTA LISTA -->
         <section id="lista" class="view hidden">
-            <h2>Lista de incidencias</h2>
-            <div id="incidentListContainer">
-                <table id="incidentTable" class="table">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Nombre</th>
-                            <th>Tipología</th>
-                            <th>Estado</th>
-                            <th>Ubicación</th>
-                            <th>Fecha / Hora</th>
-                            <th>Reportó</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="incidentList"></tbody>
-                </table>
+            <div class="card">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                    <h2>Lista de Incidencias</h2>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="document.querySelector('[data-view=\'registrar\']').click()"
+                            class="btn primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">+ Nueva</button>
+                        <button id="btnExport" class="btn success" style="padding: 0.5rem 1rem; font-size: 0.9rem;">📊
+                            Excel</button>
+                    </div>
+                </div>
+
+                <!-- FILTROS -->
+                <div class="filters-container"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 0.5rem;">
+                    <input type="text" id="filterSearch" placeholder="Buscar por título, código o ubicación..."
+                        style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color);">
+
+                    <select id="filterType"
+                        style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color);">
+                        <option value="">Todos los tipos</option>
+                        <option>Robo</option>
+                        <option>Vandalismo</option>
+                        <option>Accidente de Tránsito</option>
+                        <option>Disturbio Público</option>
+                        <option>Emergencia Médica</option>
+                        <option>Otro</option>
+                    </select>
+
+                    <select id="filterStatus"
+                        style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color);">
+                        <option value="">Todos los estados</option>
+                        <option>En proceso</option>
+                        <option>Resuelta</option>
+                        <option>No se resolvió</option>
+                    </select>
+
+                    <input type="date" id="filterDate"
+                        style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color);">
+                </div>
+                <div class="table-container">
+                    <table id="incidentTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Incidencia</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
+                                <th>Ubicación</th>
+                                <th>Fecha</th>
+                                <th>Reportado por</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incidentList">
+                            <!-- JS render -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
+        <!-- VISTA MAPA -->
         <section id="mapa" class="view hidden">
-            <h2>Mapa de cámaras - San Juan de Lurigancho</h2>
-            <div id="map" class="map-large"></div>
-            <p class="note">Zonas: Norte / Centro / Sur. Haz clic en cámaras para ver detalles.</p>
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h2>Mapa de Monitoreo</h2>
+                    <span class="status-chip" style="background: #e0f2fe; color: #0369a1;">En vivo</span>
+                </div>
+                <div id="map" class="map-large"></div>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 0.9rem; color: var(--text-muted);">
+                    <span>🟢 Zona Norte</span>
+                    <span>🟡 Zona Centro</span>
+                    <span>🔵 Zona Sur</span>
+                </div>
+            </div>
         </section>
     </main>
 
     <footer class="footer">
-        <small>Pagina Web creada por JOSE MILLA</small>
+        <small>© 2025 Gestor de Incidencias SJL. Desarrollado por JOSE MILLA.</small>
     </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
     <script src="./app.js"></script>
 </body>
+
 </html>
