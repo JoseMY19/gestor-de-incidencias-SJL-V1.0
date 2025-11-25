@@ -45,6 +45,11 @@ app.use('/uploads', express.static(uploadDir)); // Servir imágenes subidas
 
 // --- ROUTES ---
 
+// Servir index.html en la raíz explícitamente
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // AUTENTICACIÓN: Iniciar sesión
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
