@@ -1,5 +1,21 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+const path = require('path');
+
+// Manually load .env
+try {
+    const envPath = path.join(__dirname, '.env');
+    const envFile = fs.readFileSync(envPath, 'utf8');
+    envFile.split('\n').forEach(line => {
+        const [key, ...value] = line.split('=');
+        if (key && value) {
+            process.env[key.trim()] = value.join('=').trim().replace(/^"|"$/g, '');
+        }
+    });
+} catch (e) {
+    console.log('No .env file found or error reading it');
+}
 
 const prisma = new PrismaClient();
 

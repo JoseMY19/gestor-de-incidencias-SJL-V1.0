@@ -88,6 +88,10 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+
+
+
+
 // OBTENER todas las incidencias
 app.get('/api/incidents', async (req, res) => {
     try {
