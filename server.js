@@ -12,9 +12,18 @@ const app = express();
 const PORT = 3000;
 
 // Configurar Multer para subida de archivos
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
+// Configurar Multer para subida de archivos
+let uploadDir = path.join(__dirname, 'uploads');
+try {
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir);
+    }
+} catch (e) {
+    console.log('Entorno de solo lectura detectado, usando /tmp');
+    uploadDir = '/tmp/uploads';
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
 }
 
 const storage = multer.diskStorage({
