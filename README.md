@@ -1,4 +1,4 @@
-# Gestor de Incidencias - SJL
+Gestor de Incidencias - SJL
 
 Sistema para el registro y monitoreo de incidencias en San Juan de Lurigancho.
 
@@ -23,7 +23,7 @@ Sistema para el registro y monitoreo de incidencias en San Juan de Lurigancho.
 **Desarrollado por Jose Milla**
 
 
-** Web
-gestor-de-incidencias-sjl-v1-0.vercel.app
+**Web**
+- gestor-de-incidencias-sjl-v1-0.vercel.app
 
 
