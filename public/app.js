@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = '/api';
 let currentUser = null;
 let mainMap, previewMap, previewMarker;
 let chartTypeInstance = null;
@@ -321,7 +321,7 @@ async function displayIncidents() {
         tdName.innerHTML = `<div>${inc.name}</div>`;
         if (inc.imageUrl) {
             const img = document.createElement('img');
-            img.src = `http://localhost:3000${inc.imageUrl}`;
+            img.src = inc.imageUrl;
             img.style.height = '40px';
             img.style.borderRadius = '4px';
             img.style.marginTop = '4px';
