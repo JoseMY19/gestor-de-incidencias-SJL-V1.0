@@ -6,7 +6,7 @@ Sistema para el registro y monitoreo de incidencias en San Juan de Lurigancho.
 
 - **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Node.js, Express
-- **Base de Datos**: PostgreSQL (Prisma ORM)
+- **Base de Datos**: PostgreSQL (Prisma ORM) - SUPABASE
 
 ## Instalación
 
