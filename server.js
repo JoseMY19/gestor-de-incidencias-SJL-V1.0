@@ -40,14 +40,16 @@ const upload = multer({ storage: storage });
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(__dirname));
+
+// Servir archivos estáticos desde la carpeta 'public'
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(uploadDir)); // Servir imágenes subidas
 
 // --- ROUTES ---
 
 // Servir index.html en la raíz explícitamente
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // AUTENTICACIÓN: Iniciar sesión
